@@ -40,7 +40,7 @@ export default function CtaButton({
       transition={{ ease: [0.34, 1.56, 0.64, 1], duration: 0.15 }}
       animate={{ backgroundColor: pressed ? "#a062a4" : "#781e7d" }}
       className={`relative isolate flex w-full items-center justify-center overflow-hidden rounded-full font-semibold text-white ${
-        compact ? "h-16 text-body-sm" : "h-28 text-body-lg"
+        compact ? "h-16 text-caption" : "h-28 text-body-lg"
       } ${className}`}
     >
       {/* Idle flash sweep: sharp skewed light bar looping left → right */}

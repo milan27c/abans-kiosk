@@ -143,3 +143,17 @@ body {
   color: transparent;
   animation: gradient-flow 4s linear infinite;
 }
+
+/* Animated pink → red gradient fill for the countdown timer tray */
+.gradient-bg-pink-red {
+  background-image: linear-gradient(
+    90deg,
+    #e91e63,
+    #f43f5e,
+    #e53935,
+    #ff2d78,
+    #e91e63
+  );
+  background-size: 300% 100%;
+  animation: gradient-flow 5s linear infinite;
+}

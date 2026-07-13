@@ -101,6 +101,84 @@ export const offers: Offer[] = [
   },
 ];
 
+// Limited-time offers surfaced on the home page. Timer is shared for the whole
+// section (see the heading), so cards carry no per-item countdown.
+export type LimitedOffer = {
+  id: string;
+  name: string;
+  image: string;
+  originalPrice: number;
+  salePrice: number;
+};
+
+export const limitedOffers: LimitedOffer[] = [
+  {
+    id: "lto1",
+    name: "Haier 18000BTU Inverter Air Conditioner - R32",
+    image: "/images/lto/lto1.png",
+    originalPrice: 289990,
+    salePrice: 214990,
+  },
+  {
+    id: "lto2",
+    name: "Toshiba 32 Inch LED TV",
+    image: "/images/lto/lto2.png",
+    originalPrice: 85990,
+    salePrice: 52999,
+  },
+  {
+    id: "lto3",
+    name: "Abans Spot Carpet Cleaner - 600W",
+    image: "/images/lto/lto3.png",
+    originalPrice: 44900,
+    salePrice: 29990,
+  },
+];
+
+// Hours the limited-time offer countdown starts from.
+export const LTO_ENDS_IN_HOURS = 14.5;
+
+// Online-exclusive offers — a horizontally scrollable rail on the home page.
+// Minimal card: image, name, price, original price only.
+export type OnlineOffer = {
+  id: string;
+  name: string;
+  image: string;
+  originalPrice: number;
+  salePrice: number;
+};
+
+export const onlineOffers: OnlineOffer[] = [
+  {
+    id: "offer1",
+    name: "JVC Party Speaker 2000W PMPO with 2 Wireless Mics & Tripod + Remote - Black",
+    image: "/images/online-offers/offer1.png",
+    originalPrice: 99999,
+    salePrice: 69999,
+  },
+  {
+    id: "offer2",
+    name: "JVC Party Speaker 1600W PMPO Wireless Mic & Remote Control - Black",
+    image: "/images/online-offers/offer2.png",
+    originalPrice: 69999,
+    salePrice: 44999,
+  },
+  {
+    id: "offer3",
+    name: "JVC Portable Party Speaker 1600W PMPO Wireless Mic & Remote Control - Black",
+    image: "/images/online-offers/offer3.png",
+    originalPrice: 79999,
+    salePrice: 49999,
+  },
+  {
+    id: "offer4",
+    name: "JVC Portable Party Speaker 1800W PMPO Wireless Mic & Remote Control - Black",
+    image: "/images/online-offers/offer4.png",
+    originalPrice: 89999,
+    salePrice: 54999,
+  },
+];
+
 export function formatLKR(value: number): string {
   return "Rs. " + value.toLocaleString("en-LK");
 }

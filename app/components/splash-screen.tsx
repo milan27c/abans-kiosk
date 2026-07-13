@@ -5,8 +5,13 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { Loader2 } from "lucide-react";
 import SlideWelcome from "./splash/slide-welcome";
-import SlideBrands from "./splash/slide-brands";
+import SlideBrands, { DURATION_MS as BRANDS_MS } from "./splash/slide-brands";
 import SlideCategories from "./splash/slide-categories";
+import SlideHomeKitchen, { DURATION_MS as HOME_KITCHEN_MS } from "./splash/slide-home-kitchen";
+import SlideLivingRoom, { DURATION_MS as LIVING_ROOM_MS } from "./splash/slide-living-room";
+import SlideWorkspace, { DURATION_MS as WORKSPACE_MS } from "./splash/slide-workspace";
+import SlideAudio, { DURATION_MS as AUDIO_MS } from "./splash/slide-audio";
+import { useKioskScrollElement } from "./kiosk-scroll-context";
 
 type Phase = "loading" | "ready" | "dismissed";
 
@@ -23,9 +28,20 @@ const LIGHT_TOP_OVERLAY = "bg-gradient-to-b from-transparent via-transparent to-
 
 const SLIDES = [
   { bg: "/images/newsplash1.png", duration: 7000, Content: SlideWelcome, overlay: LIGHT_TOP_OVERLAY },
-  { bg: "/images/newsplash2.png", duration: 9000, Content: SlideBrands, overlay: LIGHT_TOP_OVERLAY },
-  { bg: "/images/newsplash3.png", duration: 8000, Content: SlideCategories, overlay: LIGHT_TOP_OVERLAY },
+  { bg: "/images/newsplash2.png", duration: BRANDS_MS, Content: SlideBrands, overlay: LIGHT_TOP_OVERLAY },
+  { bg: "/images/splashscreen3.png", duration: 8000, Content: SlideCategories, overlay: LIGHT_TOP_OVERLAY },
+  { bg: "/images/splashscreen4.png", duration: HOME_KITCHEN_MS, Content: SlideHomeKitchen, overlay: LIGHT_TOP_OVERLAY },
+  { bg: "/images/splashscreen5.png", duration: LIVING_ROOM_MS, Content: SlideLivingRoom, overlay: LIGHT_TOP_OVERLAY },
+  { bg: "/images/splashscreen6.png", duration: WORKSPACE_MS, Content: SlideWorkspace, overlay: LIGHT_TOP_OVERLAY },
+  { bg: "/images/splashscreen7.png", duration: AUDIO_MS, Content: SlideAudio, overlay: LIGHT_TOP_OVERLAY },
 ];
+
+// Index of the slide that should be entered with a "zoom into the top-left
+// corner" transition instead of the default crossfade — used for the
+// categories → home & kitchen handoff, since slide 3's kitchen tag sits in
+// that corner and slide 4 continues straight into a kitchen scene.
+const ZOOM_ENTRY_INDEX = 3;
+const ZOOM_ORIGIN = "16% 26%";
 
 /**
  * Kiosk attract / boot screen — shown once before the home page. Briefly
@@ -38,11 +54,29 @@ const SLIDES = [
 export default function SplashScreen() {
   const [phase, setPhase] = useState<Phase>("loading");
   const [slide, setSlide] = useState(0);
+  const scrollEl = useKioskScrollElement();
 
   useEffect(() => {
     const t = setTimeout(() => setPhase("ready"), LOADING_MS);
     return () => clearTimeout(t);
   }, []);
+
+  // While the splash is up, keep the page pinned to the top and prevent it
+  // from scrolling — the splash overlay is fixed to the kiosk viewport, so
+  // any background scroll would drag it out of view. Real hardware scrolls
+  // the document; the browser-preview frame scrolls its own container.
+  useEffect(() => {
+    if (phase === "dismissed") return;
+    const el: HTMLElement | null =
+      scrollEl ?? (document.scrollingElement as HTMLElement | null);
+    if (!el) return;
+    el.scrollTop = 0;
+    const prev = el.style.overflow;
+    el.style.overflow = "hidden";
+    return () => {
+      el.style.overflow = prev;
+    };
+  }, [phase, scrollEl]);
 
   useEffect(() => {
     if (phase !== "ready") return;
@@ -54,6 +88,7 @@ export default function SplashScreen() {
   }, [phase, slide]);
 
   const Active = SLIDES[slide].Content;
+  const isZoomEntry = slide === ZOOM_ENTRY_INDEX;
 
   return (
     <AnimatePresence>
@@ -65,16 +100,21 @@ export default function SplashScreen() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="absolute inset-0 z-[200] overflow-hidden bg-black"
+          className="fixed inset-0 z-[200] overflow-hidden bg-black"
         >
-          {/* Background crossfade */}
+          {/* Background crossfade — the categories → home&kitchen handoff
+              zooms into the top-left corner instead of a plain crossfade. */}
           <AnimatePresence>
             <motion.div
               key={phase === "ready" ? SLIDES[slide].bg : "loading-bg"}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.9, ease: "easeInOut" }}
+              initial={{ opacity: 0, scale: 1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={isZoomEntry ? { opacity: 0, scale: 2.6 } : { opacity: 0 }}
+              transition={{
+                duration: isZoomEntry ? 1.1 : 0.9,
+                ease: "easeInOut",
+              }}
+              style={isZoomEntry ? { transformOrigin: ZOOM_ORIGIN } : undefined}
               className="absolute inset-0"
             >
               <Image

@@ -19,7 +19,7 @@ type CategoryTag = {
 const CATEGORIES: CategoryTag[] = [
   {
     icon: Refrigerator,
-    title: "Kitchen",
+    title: "Home & Kitchen",
     subtitle: "Refrigerators, Microwaves & More",
     left: "6%",
     top: "38%",
@@ -85,9 +85,6 @@ export default function SlideCategories() {
           <br />
           <span className="gradient-text-brand">Every Lifestyle</span>
         </motion.h2>
-        <motion.p variants={rise} className="mt-5 text-body text-ash-950/75">
-          Home appliances, personal tech, entertainment, and more.
-        </motion.p>
       </motion.div>
 
       {/* Tags positioned over the lifestyle collage below */}
