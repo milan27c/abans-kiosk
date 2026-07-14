@@ -6,11 +6,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Loader2 } from "lucide-react";
 import SlideWelcome from "./splash/slide-welcome";
 import SlideBrands, { DURATION_MS as BRANDS_MS } from "./splash/slide-brands";
-import SlideCategories from "./splash/slide-categories";
-import SlideHomeKitchen, { DURATION_MS as HOME_KITCHEN_MS } from "./splash/slide-home-kitchen";
-import SlideLivingRoom, { DURATION_MS as LIVING_ROOM_MS } from "./splash/slide-living-room";
-import SlideWorkspace, { DURATION_MS as WORKSPACE_MS } from "./splash/slide-workspace";
-import SlideAudio, { DURATION_MS as AUDIO_MS } from "./splash/slide-audio";
+import SlideCta from "./splash/slide-cta";
 import { useViewportPin } from "./kiosk-scroll-context";
 
 type Phase = "loading" | "ready" | "dismissed";
@@ -26,22 +22,18 @@ const DEFAULT_OVERLAY = "bg-gradient-to-b from-black/75 via-black/15 to-black/85
 // touch-footer's legibility.
 const LIGHT_TOP_OVERLAY = "bg-gradient-to-b from-transparent via-transparent to-black/60";
 
+// Plain promo-art slides — no text overlay of our own, just the two bottom
+// CTAs (SlideCta), reused across all four "New Splash" images.
+const CTA_MS = 6500;
+
 const SLIDES = [
   { bg: "/images/newsplash1.png", duration: 7000, Content: SlideWelcome, overlay: LIGHT_TOP_OVERLAY },
   { bg: "/images/newsplash2.png", duration: BRANDS_MS, Content: SlideBrands, overlay: LIGHT_TOP_OVERLAY },
-  { bg: "/images/splashscreen3.png", duration: 8000, Content: SlideCategories, overlay: LIGHT_TOP_OVERLAY },
-  { bg: "/images/splashscreen4.png", duration: HOME_KITCHEN_MS, Content: SlideHomeKitchen, overlay: LIGHT_TOP_OVERLAY },
-  { bg: "/images/splashscreen5.png", duration: LIVING_ROOM_MS, Content: SlideLivingRoom, overlay: LIGHT_TOP_OVERLAY },
-  { bg: "/images/splashscreen6.png", duration: WORKSPACE_MS, Content: SlideWorkspace, overlay: LIGHT_TOP_OVERLAY },
-  { bg: "/images/splashscreen7.png", duration: AUDIO_MS, Content: SlideAudio, overlay: LIGHT_TOP_OVERLAY },
+  { bg: "/images/new-splash/slide3.png", duration: CTA_MS, Content: SlideCta, overlay: LIGHT_TOP_OVERLAY },
+  { bg: "/images/new-splash/slide4.png", duration: CTA_MS, Content: SlideCta, overlay: LIGHT_TOP_OVERLAY },
+  { bg: "/images/new-splash/slide5.png", duration: CTA_MS, Content: SlideCta, overlay: LIGHT_TOP_OVERLAY },
+  { bg: "/images/new-splash/slide6.png", duration: CTA_MS, Content: SlideCta, overlay: LIGHT_TOP_OVERLAY },
 ];
-
-// Index of the slide that should be entered with a "zoom into the top-left
-// corner" transition instead of the default crossfade — used for the
-// categories → home & kitchen handoff, since slide 3's kitchen tag sits in
-// that corner and slide 4 continues straight into a kitchen scene.
-const ZOOM_ENTRY_INDEX = 3;
-const ZOOM_ORIGIN = "16% 26%";
 
 // Once the visitor has dismissed the attract screen, returning to the home
 // page (e.g. the catalog's back button) should land on the home content, not
@@ -88,7 +80,6 @@ export default function SplashScreen() {
   }, [phase, slide]);
 
   const Active = SLIDES[slide].Content;
-  const isZoomEntry = slide === ZOOM_ENTRY_INDEX;
 
   return (
     <AnimatePresence>
@@ -106,19 +97,14 @@ export default function SplashScreen() {
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="fixed inset-0 z-[200] overflow-hidden bg-black"
         >
-          {/* Background crossfade — the categories → home&kitchen handoff
-              zooms into the top-left corner instead of a plain crossfade. */}
+          {/* Background crossfade */}
           <AnimatePresence>
             <motion.div
               key={phase === "ready" ? SLIDES[slide].bg : "loading-bg"}
               initial={{ opacity: 0, scale: 1 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={isZoomEntry ? { opacity: 0, scale: 2.6 } : { opacity: 0 }}
-              transition={{
-                duration: isZoomEntry ? 1.1 : 0.9,
-                ease: "easeInOut",
-              }}
-              style={isZoomEntry ? { transformOrigin: ZOOM_ORIGIN } : undefined}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.9, ease: "easeInOut" }}
               className="absolute inset-0"
             >
               <Image

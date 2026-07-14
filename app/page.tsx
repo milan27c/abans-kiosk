@@ -2,6 +2,7 @@ import HomeHeader from "./components/home-header";
 import LtoOffers from "./components/lto-offers";
 import CountdownTimer from "./components/countdown-timer";
 import SplashScreen from "./components/splash-screen";
+import HomeCategoryTabs from "./components/home-category-tabs";
 import { limitedOffers, LTO_ENDS_IN_HOURS } from "./data/catalog";
 
 const FEATURED_COUNT = 3;
@@ -33,15 +34,11 @@ export default function Home() {
 
         {/* Three product cards */}
         <LtoOffers offers={featured} />
-      </section>
 
-      {/* Footer */}
-      <footer className="border-t border-line px-10 py-14 text-center">
-        <p className="text-body font-medium text-fg-muted">
-          Visit{" "}
-          <span className="font-semibold text-brand-500">www.buyabans.com</span>
-        </p>
-      </footer>
+        {/* Shop by category */}
+        <h2 className="mb-5 mt-14 text-h4 font-bold text-fg">Shop by Category</h2>
+        <HomeCategoryTabs />
+      </section>
     </div>
   );
 }

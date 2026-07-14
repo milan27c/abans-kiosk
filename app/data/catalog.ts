@@ -521,3 +521,16 @@ export function buildDemoProducts(count: number): Product[] {
 }
 
 export const PRODUCTS_PER_PAGE = 30;
+
+// Partner banks offering installment plans — shown as "Easy Payment Plans" in
+// the product QR drawer. Logos live in public/images/bank.
+export type PaymentBank = { id: string; label: string; logo: string };
+
+export const paymentBanks: PaymentBank[] = [
+  { id: "union", label: "Union Bank", logo: "/images/bank/unionbank.avif" },
+  { id: "commercial", label: "Commercial Bank", logo: "/images/bank/commercialbank.avif" },
+  { id: "nations-trust", label: "Nations Trust Bank", logo: "/images/bank/nationstrust.avif" },
+  { id: "sampath", label: "Sampath Cards", logo: "/images/bank/sampathcards.avif" },
+  { id: "dfcc", label: "DFCC Bank", logo: "/images/bank/dfccbank.avif" },
+  { id: "cargills", label: "Cargills Bank", logo: "/images/bank/cargillsbank.avif" },
+];

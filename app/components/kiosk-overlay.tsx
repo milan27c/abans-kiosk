@@ -21,14 +21,22 @@ const sheet: Variants = {
   hidden: { y: "100%" },
   show: { y: 0 },
 };
+const center: Variants = {
+  hidden: { opacity: 0, scale: 0.94 },
+  show: { opacity: 1, scale: 1 },
+};
 
 export default function KioskOverlay({
   open,
   onClose,
+  variant = "sheet",
   children,
 }: {
   open: boolean;
   onClose: () => void;
+  /** "sheet" slides up from the bottom (default); "center" pops up in the
+   *  middle of the viewport — for small, self-contained popups. */
+  variant?: "sheet" | "center";
   children: React.ReactNode;
 }) {
   const rect = useViewportPin(open);
@@ -53,13 +61,23 @@ export default function KioskOverlay({
             onClick={onClose}
             className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"
           />
-          <motion.div
-            variants={sheet}
-            transition={{ type: "spring", damping: 34, stiffness: 340 }}
-            className="absolute inset-x-0 bottom-0"
-          >
-            {children}
-          </motion.div>
+          {variant === "center" ? (
+            <motion.div
+              variants={center}
+              transition={{ type: "spring", damping: 28, stiffness: 360 }}
+              className="absolute inset-0 flex items-center justify-center p-8"
+            >
+              {children}
+            </motion.div>
+          ) : (
+            <motion.div
+              variants={sheet}
+              transition={{ type: "spring", damping: 34, stiffness: 340 }}
+              className="absolute inset-x-0 bottom-0"
+            >
+              {children}
+            </motion.div>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

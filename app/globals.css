@@ -171,3 +171,16 @@ body {
   background-size: 300% 100%;
   animation: gradient-flow 5s linear infinite;
 }
+
+/* Animated white → light-gray gradient for the splash's secondary CTA */
+.gradient-bg-white-gray {
+  background-image: linear-gradient(
+    90deg,
+    #ffffff,
+    #e5e7eb,
+    #f3f4f6,
+    #ffffff
+  );
+  background-size: 300% 100%;
+  animation: gradient-flow 5s linear infinite;
+}

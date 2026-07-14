@@ -1,9 +1,21 @@
 "use client";
 
+import { useMemo } from "react";
 import Image from "next/image";
 import { X, ScanLine } from "lucide-react";
 import KioskOverlay from "./kiosk-overlay";
-import { formatLKR, type OnlineOffer } from "../data/catalog";
+import { formatLKR, paymentBanks, type OnlineOffer } from "../data/catalog";
+
+// Installment terms a bank might offer; picked per product+bank below so the
+// plan looks plausible but stays stable for a given product (no data source
+// for real plans yet — CLAUDE.md §5).
+const TERM_MONTHS = [6, 9, 12, 18, 24, 36];
+
+function hashSeed(seed: string): number {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return h;
+}
 
 export default function ProductDetailDrawer({
   open,
@@ -14,6 +26,14 @@ export default function ProductDetailDrawer({
   product: OnlineOffer | null;
   onClose: () => void;
 }) {
+  const plans = useMemo(() => {
+    if (!product) return [];
+    return paymentBanks.map((bank) => {
+      const months = TERM_MONTHS[hashSeed(product.id + bank.id) % TERM_MONTHS.length];
+      return { bank, monthly: Math.round(product.salePrice / months) };
+    });
+  }, [product]);
+
   return (
     <KioskOverlay open={open} onClose={onClose}>
       {product && (
@@ -62,6 +82,39 @@ export default function ProductDetailDrawer({
                     {formatLKR(product.originalPrice)}
                   </span>
                 </div>
+              </div>
+            </div>
+
+            {/* Easy payment plans */}
+            <div className="mt-8 w-full">
+              <h3 className="mb-3.5 text-body-lg font-bold text-fg">
+                Easy Payment Plans
+              </h3>
+              <div className="grid grid-cols-3 gap-4">
+                {plans.map(({ bank, monthly }) => (
+                  <div
+                    key={bank.id}
+                    className="flex items-center gap-4 rounded-2xl border border-line bg-surface p-4"
+                  >
+                    <div className="relative h-14 w-24 shrink-0 rounded-lg bg-white p-2">
+                      <Image
+                        src={bank.logo}
+                        alt={bank.label}
+                        fill
+                        sizes="100px"
+                        className="object-contain p-1"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-body-sm text-fg-muted">
+                        Monthly
+                      </span>
+                      <span className="whitespace-nowrap text-body font-bold text-fg">
+                        {formatLKR(monthly)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
