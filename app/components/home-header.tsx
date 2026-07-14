@@ -7,6 +7,7 @@ import { Search } from "lucide-react";
 
 export default function HomeHeader() {
   const router = useRouter();
+  //logo
 
   return (
     <div className="sticky top-0 z-40 flex items-center justify-between gap-6 border-b border-line bg-canvas/90 px-10 py-6 backdrop-blur-md">
