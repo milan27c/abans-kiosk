@@ -1,45 +1,25 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { Search, Menu } from "lucide-react";
-import ThemeToggle from "./theme-toggle";
-import MainMenuDrawer from "./main-menu-drawer";
+import { Search } from "lucide-react";
 
 export default function HomeHeader() {
   const router = useRouter();
-  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <>
-      {/* Nav bar: Abans logo (left); search, theme & menu (right) */}
-      <div className="sticky top-0 z-40 flex items-center justify-between gap-6 border-b border-line bg-canvas/90 px-10 py-6 backdrop-blur-md">
-        <Image
-          src="/images/logo.png"
-          alt="Abans"
-          width={800}
-          height={230}
-          priority
-          className="h-auto w-[152px] dark:brightness-[1.7]"
-        />
-        <div className="flex items-center gap-4">
-          <NavSearchButton onOpen={() => router.push("/catalog")} />
-          <ThemeToggle />
-          <button
-            type="button"
-            onClick={() => setMenuOpen(true)}
-            aria-label="Open menu"
-            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-line bg-surface text-fg"
-          >
-            <Menu size={30} strokeWidth={2.25} />
-          </button>
-        </div>
-      </div>
-
-      <MainMenuDrawer open={menuOpen} onClose={() => setMenuOpen(false)} />
-    </>
+    <div className="sticky top-0 z-40 flex items-center justify-between gap-6 border-b border-line bg-canvas/90 px-10 py-6 backdrop-blur-md">
+      <Image
+        src="/images/logo.png"
+        alt="Abans"
+        width={800}
+        height={230}
+        priority
+        className="h-auto w-[152px] dark:brightness-[1.7]"
+      />
+      <NavSearchButton onOpen={() => router.push("/catalog")} />
+    </div>
   );
 }
 
