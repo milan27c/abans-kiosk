@@ -11,7 +11,7 @@ import SlideHomeKitchen, { DURATION_MS as HOME_KITCHEN_MS } from "./splash/slide
 import SlideLivingRoom, { DURATION_MS as LIVING_ROOM_MS } from "./splash/slide-living-room";
 import SlideWorkspace, { DURATION_MS as WORKSPACE_MS } from "./splash/slide-workspace";
 import SlideAudio, { DURATION_MS as AUDIO_MS } from "./splash/slide-audio";
-import { useKioskScrollElement } from "./kiosk-scroll-context";
+import { useViewportPin } from "./kiosk-scroll-context";
 
 type Phase = "loading" | "ready" | "dismissed";
 
@@ -54,29 +54,15 @@ const ZOOM_ORIGIN = "16% 26%";
 export default function SplashScreen() {
   const [phase, setPhase] = useState<Phase>("loading");
   const [slide, setSlide] = useState(0);
-  const scrollEl = useKioskScrollElement();
+
+  // While the splash is up, pin the page to the top and lock background scroll
+  // so the fixed overlay can't be dragged out of view.
+  useViewportPin(phase !== "dismissed", true);
 
   useEffect(() => {
     const t = setTimeout(() => setPhase("ready"), LOADING_MS);
     return () => clearTimeout(t);
   }, []);
-
-  // While the splash is up, keep the page pinned to the top and prevent it
-  // from scrolling — the splash overlay is fixed to the kiosk viewport, so
-  // any background scroll would drag it out of view. Real hardware scrolls
-  // the document; the browser-preview frame scrolls its own container.
-  useEffect(() => {
-    if (phase === "dismissed") return;
-    const el: HTMLElement | null =
-      scrollEl ?? (document.scrollingElement as HTMLElement | null);
-    if (!el) return;
-    el.scrollTop = 0;
-    const prev = el.style.overflow;
-    el.style.overflow = "hidden";
-    return () => {
-      el.style.overflow = prev;
-    };
-  }, [phase, scrollEl]);
 
   useEffect(() => {
     if (phase !== "ready") return;

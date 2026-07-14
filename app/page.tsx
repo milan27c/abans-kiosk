@@ -2,7 +2,7 @@ import Image from "next/image";
 import HomeHeader from "./components/home-header";
 import HeroSlider from "./components/hero-slider";
 import LtoCard from "./components/lto-card";
-import OnlineOfferCard from "./components/online-offer-card";
+import OnlineOffersRail from "./components/online-offers-rail";
 import CountdownTimer from "./components/countdown-timer";
 import ViewAllButton from "./components/view-all-button";
 import SplashScreen from "./components/splash-screen";
@@ -95,11 +95,7 @@ export default function Home() {
           <ViewAllButton label="View more" />
         </div>
 
-        <div className="flex gap-5 overflow-x-auto px-10 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {onlineOffers.map((offer, i) => (
-            <OnlineOfferCard key={offer.id} offer={offer} index={i} />
-          ))}
-        </div>
+        <OnlineOffersRail offers={onlineOffers} />
       </section>
 
       {/* TV banners row */}

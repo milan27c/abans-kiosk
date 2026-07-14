@@ -7,9 +7,13 @@ import { formatLKR, type OnlineOffer } from "../data/catalog";
 export default function OnlineOfferCard({
   offer,
   index,
+  className = "w-[300px] shrink-0",
+  onSelect,
 }: {
   offer: OnlineOffer;
   index: number;
+  className?: string;
+  onSelect?: () => void;
 }) {
   return (
     <motion.article
@@ -17,7 +21,11 @@ export default function OnlineOfferCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.45, delay: (index % 3) * 0.08, ease: "easeOut" }}
-      className="flex w-[300px] shrink-0 flex-col overflow-hidden rounded-3xl border border-line bg-surface"
+      onClick={onSelect}
+      whileTap={onSelect ? { scale: 0.98 } : undefined}
+      className={`flex flex-col overflow-hidden rounded-3xl border border-line bg-surface ${
+        onSelect ? "cursor-pointer" : ""
+      } ${className}`}
     >
       {/* Product image */}
       <div className="relative aspect-[5/3] w-full bg-ash-100 dark:bg-elevated">

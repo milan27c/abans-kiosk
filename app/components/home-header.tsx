@@ -1,15 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "motion/react";
+import { useRouter } from "next/navigation";
+import { motion } from "motion/react";
 import { Search } from "lucide-react";
 import ThemeToggle from "./theme-toggle";
-import OnScreenKeyboard from "./onscreen-keyboard";
 
 export default function HomeHeader() {
-  const [, setQuery] = useState("");
-  const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <>
@@ -24,43 +22,22 @@ export default function HomeHeader() {
           className="h-auto w-[190px] dark:brightness-[1.7]"
         />
         <div className="flex items-center gap-4">
-          <NavSearchButton onOpen={() => setKeyboardOpen(true)} active={keyboardOpen} />
+          <NavSearchButton onOpen={() => router.push("/catalog")} />
           <ThemeToggle />
         </div>
       </div>
-
-      {/* On-screen keyboard */}
-      <AnimatePresence>
-        {keyboardOpen && (
-          <OnScreenKeyboard
-            onChar={(c) => setQuery((q) => q + c)}
-            onBackspace={() => setQuery((q) => q.slice(0, -1))}
-            onSpace={() => setQuery((q) => q + " ")}
-            onEnter={() => setKeyboardOpen(false)}
-            onClose={() => setKeyboardOpen(false)}
-          />
-        )}
-      </AnimatePresence>
     </>
   );
 }
 
-function NavSearchButton({
-  onOpen,
-  active,
-}: {
-  onOpen: () => void;
-  active: boolean;
-}) {
+function NavSearchButton({ onOpen }: { onOpen: () => void }) {
   return (
     <motion.button
       type="button"
       onClick={onOpen}
       whileTap={{ scale: 0.97 }}
       transition={{ duration: 0.15 }}
-      className={`relative isolate flex items-center gap-3 overflow-hidden rounded-full border-2 bg-surface pl-6 pr-7 py-4 text-left transition-colors ${
-        active ? "border-brand-500" : "border-line"
-      }`}
+      className="relative isolate flex items-center gap-3 overflow-hidden rounded-full border-2 border-line bg-surface pl-6 pr-7 py-4 text-left"
     >
       {/* Sheen that sweeps across the button on a loop */}
       <motion.span
