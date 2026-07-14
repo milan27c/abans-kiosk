@@ -8,25 +8,24 @@ import {
   Search,
   X,
   SlidersHorizontal,
-  LayoutGrid,
+  Menu,
   ArrowUpDown,
   ChevronLeft,
   ChevronRight,
   Check,
 } from "lucide-react";
 import ThemeToggle from "../components/theme-toggle";
+import MainMenuDrawer from "../components/main-menu-drawer";
 import OnScreenKeyboard from "../components/onscreen-keyboard";
 import OnlineOfferCard from "../components/online-offer-card";
 import ProductDetailDrawer from "../components/product-detail-drawer";
 import KioskOverlay from "../components/kiosk-overlay";
-import BrandsDrawer from "../components/catalog/brands-drawer";
-import CategoriesDrawer, {
-  optionLabel,
-} from "../components/catalog/categories-drawer";
+import FilterDrawer from "../components/catalog/filter-drawer";
 import {
   catalogBrands,
   buildDemoProducts,
   sortOptions,
+  optionLabel,
   PRODUCTS_PER_PAGE,
   type Product,
 } from "../data/catalog";
@@ -49,9 +48,9 @@ export default function CatalogPage() {
   const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   // Drawer visibility
-  const [catsOpen, setCatsOpen] = useState(false);
-  const [brandsOpen, setBrandsOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Product QR detail drawer (detail retained during close animation)
   const [detail, setDetail] = useState<Product | null>(null);
@@ -92,20 +91,36 @@ export default function CatalogPage() {
     <div className="relative min-h-full bg-canvas" data-catalog-top>
       {/* Secondary nav bar */}
       <div className="sticky top-0 z-40 border-b border-line bg-canvas/92 backdrop-blur-md">
-        {/* Row 1: back + long search + theme toggle */}
-        <div className="flex items-center gap-4 px-8 pb-4 pt-6">
+        {/* Row 1: back (icon + text), theme toggle, menu */}
+        <div className="flex items-center justify-between gap-4 px-8 pb-4 pt-6">
           <button
             type="button"
             onClick={() => router.push("/")}
-            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-line bg-surface text-fg"
+            className="flex h-16 items-center gap-2 rounded-full border-2 border-line bg-surface pl-4 pr-6 text-fg"
           >
-            <ArrowLeft size={30} strokeWidth={2.25} />
+            <ArrowLeft size={28} strokeWidth={2.25} />
+            <span className="text-body font-semibold">Back</span>
           </button>
 
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <button
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              aria-label="Open menu"
+              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-line bg-surface text-fg"
+            >
+              <Menu size={30} strokeWidth={2.25} />
+            </button>
+          </div>
+        </div>
+
+        {/* Row 2: search bar + single filter button */}
+        <div className="flex items-center gap-3 px-8 pb-5">
           <button
             type="button"
             onClick={() => setKeyboardOpen(true)}
-            className={`relative flex h-16 flex-1 items-center gap-3 overflow-hidden rounded-full border-2 bg-surface px-6 text-left ${
+            className={`relative flex h-20 flex-1 items-center gap-3 overflow-hidden rounded-full border-2 bg-surface px-7 text-left ${
               keyboardOpen ? "border-brand-500" : "border-line"
             }`}
           >
@@ -140,23 +155,27 @@ export default function CatalogPage() {
             )}
           </button>
 
-          <ThemeToggle />
-        </div>
-
-        {/* Row 2: filter triggers */}
-        <div className="flex items-center gap-3 px-8 pb-5">
-          <FilterTrigger
-            icon={<LayoutGrid size={24} strokeWidth={2.25} />}
-            label="Categories"
-            count={selectedCats.length}
-            onClick={() => setCatsOpen(true)}
-          />
-          <FilterTrigger
-            icon={<SlidersHorizontal size={24} strokeWidth={2.25} />}
-            label="Brands"
-            count={selectedBrands.length}
-            onClick={() => setBrandsOpen(true)}
-          />
+          <button
+            type="button"
+            onClick={() => setFilterOpen(true)}
+            className={`flex h-20 shrink-0 items-center gap-3 rounded-full border-2 px-8 text-body font-semibold transition-colors ${
+              hasFilters
+                ? "border-brand-500 bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-200"
+                : "border-line bg-surface text-fg"
+            }`}
+          >
+            <SlidersHorizontal
+              size={26}
+              strokeWidth={2.25}
+              className={hasFilters ? "text-brand-500" : "text-fg-muted"}
+            />
+            Filters
+            {hasFilters && (
+              <span className="flex h-8 min-w-8 items-center justify-center rounded-full bg-brand-500 px-2 text-caption font-bold text-white">
+                {selectedCats.length + selectedBrands.length}
+              </span>
+            )}
+          </button>
         </div>
       </div>
 
@@ -257,25 +276,21 @@ export default function CatalogPage() {
         </div>
       )}
 
-      {/* Filter drawers */}
-      <CategoriesDrawer
-        open={catsOpen}
-        selected={selectedCats}
-        onApply={(next) => {
-          setSelectedCats(next);
+      {/* Combined filter drawer */}
+      <FilterDrawer
+        open={filterOpen}
+        brands={selectedBrands}
+        options={selectedCats}
+        onApply={(nextBrands, nextOptions) => {
+          setSelectedBrands(nextBrands);
+          setSelectedCats(nextOptions);
           setPage(1);
         }}
-        onClose={() => setCatsOpen(false)}
+        onClose={() => setFilterOpen(false)}
       />
-      <BrandsDrawer
-        open={brandsOpen}
-        selected={selectedBrands}
-        onApply={(next) => {
-          setSelectedBrands(next);
-          setPage(1);
-        }}
-        onClose={() => setBrandsOpen(false)}
-      />
+
+      {/* Main menu */}
+      <MainMenuDrawer open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       {/* Sort sheet */}
       <KioskOverlay open={sortOpen} onClose={() => setSortOpen(false)}>
@@ -335,41 +350,6 @@ export default function CatalogPage() {
         )}
       </AnimatePresence>
     </div>
-  );
-}
-
-function FilterTrigger({
-  icon,
-  label,
-  count,
-  onClick,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  count: number;
-  onClick: () => void;
-}) {
-  return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      whileTap={{ scale: 0.97 }}
-      className={`flex items-center gap-3 rounded-full border-2 px-6 py-3.5 text-body-sm font-semibold transition-colors ${
-        count > 0
-          ? "border-brand-500 bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-200"
-          : "border-line bg-surface text-fg"
-      }`}
-    >
-      <span className={count > 0 ? "text-brand-500" : "text-fg-muted"}>
-        {icon}
-      </span>
-      {label}
-      {count > 0 && (
-        <span className="flex h-8 min-w-8 items-center justify-center rounded-full bg-brand-500 px-2 text-caption font-bold text-white">
-          {count}
-        </span>
-      )}
-    </motion.button>
   );
 }
 

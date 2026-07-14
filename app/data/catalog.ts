@@ -457,6 +457,49 @@ export const filterCategories: FilterCategory[] = [
   },
 ];
 
+// A selected sub-category option is encoded as `${categoryId}::${option}`.
+export const OPT_SEP = "::";
+export function optionLabel(id: string): string {
+  const i = id.indexOf(OPT_SEP);
+  return i === -1 ? id : id.slice(i + OPT_SEP.length);
+}
+
+// Static 2–3 colour gradient per main category, used to give each category
+// tile its own look in the filter drawer (applied via inline background-image).
+export const categoryGradient: Record<string, string> = {
+  tv: "linear-gradient(135deg,#6366f1,#8b5cf6,#a855f7)",
+  audio: "linear-gradient(135deg,#ec4899,#d946ef,#a855f7)",
+  "home-appliances": "linear-gradient(135deg,#14b8a6,#06b6d4,#0ea5e9)",
+  kitchen: "linear-gradient(135deg,#fb923c,#f97316,#ef4444)",
+  mobile: "linear-gradient(135deg,#3b82f6,#6366f1,#4f46e5)",
+  apple: "linear-gradient(135deg,#64748b,#475569,#334155)",
+  computers: "linear-gradient(135deg,#22d3ee,#0ea5e9,#2563eb)",
+  fashion: "linear-gradient(135deg,#fb7185,#f43f5e,#ec4899)",
+  miniso: "linear-gradient(135deg,#f87171,#ef4444,#fb923c)",
+  "personal-care": "linear-gradient(135deg,#34d399,#10b981,#14b8a6)",
+  commercial: "linear-gradient(135deg,#94a3b8,#64748b,#3b82f6)",
+  toys: "linear-gradient(135deg,#facc15,#fb923c,#f472b6)",
+  furniture: "linear-gradient(135deg,#d6a760,#b45309,#78350f)",
+};
+
+// Which brands stock each main category (dummy — real availability TBD). Used
+// to narrow the brand grid once a category is picked in the filter drawer.
+export const categoryBrandIds: Record<string, string[]> = {
+  tv: ["abans", "lg", "jvc", "haier", "xiaomi"],
+  audio: ["jbl", "jvc", "abans", "xiaomi", "apple"],
+  "home-appliances": ["abans", "lg", "haier"],
+  kitchen: ["abans", "haier", "lg"],
+  mobile: ["apple", "xiaomi", "mibro"],
+  apple: ["apple"],
+  computers: ["hp", "acer", "lenovo", "apple"],
+  fashion: ["miniso", "mibro"],
+  miniso: ["miniso"],
+  "personal-care": ["abans", "xiaomi"],
+  commercial: ["abans", "haier"],
+  toys: ["miniso"],
+  furniture: ["abans"],
+};
+
 export type SortOption = { id: string; label: string };
 export const sortOptions: SortOption[] = [
   { id: "featured", label: "Featured" },
