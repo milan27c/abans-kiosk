@@ -1,7 +1,7 @@
 import Image from "next/image";
 import HomeHeader from "./components/home-header";
 import HeroSlider from "./components/hero-slider";
-import LtoCard from "./components/lto-card";
+import LtoOffers from "./components/lto-offers";
 import OnlineOffersRail from "./components/online-offers-rail";
 import CountdownTimer from "./components/countdown-timer";
 import ViewAllButton from "./components/view-all-button";
@@ -52,11 +52,7 @@ export default function Home() {
         </div>
 
         {/* Three product cards */}
-        <div className="grid grid-cols-3 gap-5">
-          {featured.map((offer, i) => (
-            <LtoCard key={offer.id} offer={offer} index={i} />
-          ))}
-        </div>
+        <LtoOffers offers={featured} />
 
         {/* Quick filters row */}
         <div className="mt-[50px] flex gap-3">
@@ -99,7 +95,7 @@ export default function Home() {
       </section>
 
       {/* TV banners row */}
-      <div className="flex gap-5 px-10 pb-[200px] pt-[60px]">
+      <div className="flex gap-5 px-10 pb-[80px] pt-[60px]">
         {TV_BANNERS.map((src, i) => (
           <div
             key={src}
@@ -115,6 +111,14 @@ export default function Home() {
           </div>
         ))}
       </div>
+
+      {/* Footer */}
+      <footer className="border-t border-line px-10 py-14 text-center">
+        <p className="text-body font-medium text-fg-muted">
+          Visit{" "}
+          <span className="font-semibold text-brand-500">www.buyabans.com</span>
+        </p>
+      </footer>
     </div>
   );
 }

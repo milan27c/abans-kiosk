@@ -73,7 +73,7 @@ export default function CountdownTimer({
 function PanelUnit({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col items-center gap-1">
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-body font-bold tabular-nums text-support-red">
+      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-body-sm font-bold tabular-nums text-support-red">
         {value}
       </span>
       <span className="text-[12px] font-semibold uppercase tracking-wide text-white/90">
@@ -85,7 +85,7 @@ function PanelUnit({ label, value }: { label: string; value: string }) {
 
 function PanelSep() {
   return (
-    <span className="flex h-10 items-center text-body font-bold text-white/60">:</span>
+    <span className="flex h-12 items-center text-body-sm font-bold text-white/60">:</span>
   );
 }
 

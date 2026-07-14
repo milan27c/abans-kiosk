@@ -31,12 +31,12 @@ export default function ProductDetailDrawer({
 
           <div className="flex flex-col items-center px-10 -mt-1">
             {/* Animated gradient heading (matches splash wordings) */}
-            <h2 className="gradient-text-brand text-h2 font-bold leading-tight">
-              Scan to Explore More
+            <h2 className="gradient-text-brand text-h3 font-bold leading-tight">
+              Scan for Details
             </h2>
-            <p className="mt-3 max-w-[780px] text-center text-body text-fg-muted">
-              Point your phone camera at the code to unlock full specifications,
-              more photos and pricing — and take the details home with you.
+            <p className="mt-3 max-w-[860px] text-center text-body text-fg-muted">
+              Scan the code with your phone to see full specifications, more
+              photos and pricing.
             </p>
 
             {/* Horizontal product card */}
@@ -51,14 +51,14 @@ export default function ProductDetailDrawer({
                 />
               </div>
               <div className="flex flex-1 flex-col gap-3">
-                <h3 className="line-clamp-2 text-h4 font-semibold text-fg">
+                <h3 className="line-clamp-2 text-body-lg font-medium text-fg">
                   {product.name}
                 </h3>
                 <div className="flex items-baseline gap-4">
-                  <span className="text-h3 font-bold text-fg">
+                  <span className="text-h4 font-bold text-fg">
                     {formatLKR(product.salePrice)}
                   </span>
-                  <span className="text-body text-fg-muted line-through">
+                  <span className="text-body-sm text-fg-muted line-through">
                     {formatLKR(product.originalPrice)}
                   </span>
                 </div>

@@ -43,16 +43,25 @@ const SLIDES = [
 const ZOOM_ENTRY_INDEX = 3;
 const ZOOM_ORIGIN = "16% 26%";
 
+// Once the visitor has dismissed the attract screen, returning to the home
+// page (e.g. the catalog's back button) should land on the home content, not
+// replay the splash. This module-scoped flag survives in-app client
+// navigations but resets on a real page load / kiosk reboot, so the attract
+// screen still shows on a fresh start.
+let splashDismissedThisSession = false;
+
 /**
  * Kiosk attract / boot screen — shown once before the home page. Briefly
  * shows a loading state (simulating catalogue/asset warm-up), then cycles
  * through a looping 3-slide carousel (welcome → brands → lifestyle
  * categories), crossfading background and content on each transition.
  * Tapping anywhere at any point dismisses it, revealing the home page
- * mounted underneath.
+ * mounted underneath. Once dismissed, later mounts skip straight to the page.
  */
 export default function SplashScreen() {
-  const [phase, setPhase] = useState<Phase>("loading");
+  const [phase, setPhase] = useState<Phase>(
+    splashDismissedThisSession ? "dismissed" : "loading"
+  );
   const [slide, setSlide] = useState(0);
 
   // While the splash is up, pin the page to the top and lock background scroll
@@ -60,7 +69,12 @@ export default function SplashScreen() {
   useViewportPin(phase !== "dismissed", true);
 
   useEffect(() => {
-    const t = setTimeout(() => setPhase("ready"), LOADING_MS);
+    // Guard the functional update so a mount that started already-dismissed
+    // (returning from an inner page) never re-shows the splash.
+    const t = setTimeout(
+      () => setPhase((p) => (p === "loading" ? "ready" : p)),
+      LOADING_MS
+    );
     return () => clearTimeout(t);
   }, []);
 
@@ -82,7 +96,11 @@ export default function SplashScreen() {
         <motion.div
           role="button"
           aria-label="Touch anywhere to begin"
-          onClick={() => phase === "ready" && setPhase("dismissed")}
+          onClick={() => {
+            if (phase !== "ready") return;
+            splashDismissedThisSession = true;
+            setPhase("dismissed");
+          }}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}

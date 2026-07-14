@@ -157,3 +157,17 @@ body {
   background-size: 300% 100%;
   animation: gradient-flow 5s linear infinite;
 }
+
+/* Animated brand-purple → pinkish-purple gradient for the nav search button
+   so it reads as an interactive call-to-action. */
+.gradient-bg-brand-pink {
+  background-image: linear-gradient(
+    90deg,
+    #781e7d,
+    #9c1f86,
+    #c02594,
+    #781e7d
+  );
+  background-size: 300% 100%;
+  animation: gradient-flow 5s linear infinite;
+}

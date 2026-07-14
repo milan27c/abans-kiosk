@@ -32,53 +32,22 @@ export default function ThemeToggle() {
   const mode = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const isDark = mode === "dark";
 
-  return (
-    <div
-      role="group"
-      aria-label="Theme"
-      className="flex items-center gap-2 rounded-full border border-line bg-surface p-2"
-    >
-      <ToggleOption active={!isDark} label="Light mode" onPress={() => apply("light")}>
-        <Sun size={26} strokeWidth={2} />
-      </ToggleOption>
-      <ToggleOption active={isDark} label="Dark mode" onPress={() => apply("dark")}>
-        <Moon size={26} strokeWidth={2} />
-      </ToggleOption>
-    </div>
-  );
-}
-
-function ToggleOption({
-  active,
-  label,
-  onPress,
-  children,
-}: {
-  active: boolean;
-  label: string;
-  onPress: () => void;
-  children: React.ReactNode;
-}) {
+  // Single icon that previews the mode you'll switch *to*: a moon while in
+  // light mode, a sun while in dark mode.
   return (
     <motion.button
       type="button"
-      aria-label={label}
-      aria-pressed={active}
-      onClick={onPress}
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      onClick={() => apply(isDark ? "light" : "dark")}
       whileTap={{ scale: 0.92 }}
       transition={{ duration: 0.15 }}
-      className={`relative flex h-16 w-16 items-center justify-center rounded-full transition-colors ${
-        active ? "text-white" : "text-fg-muted"
-      }`}
+      className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-line bg-surface text-fg"
     >
-      {active && (
-        <motion.span
-          layoutId="theme-pill"
-          className="absolute inset-0 rounded-full bg-brand-500"
-          transition={{ type: "spring", stiffness: 500, damping: 40 }}
-        />
+      {isDark ? (
+        <Sun size={28} strokeWidth={2} />
+      ) : (
+        <Moon size={28} strokeWidth={2} />
       )}
-      <span className="relative z-10">{children}</span>
     </motion.button>
   );
 }
