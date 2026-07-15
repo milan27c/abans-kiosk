@@ -64,10 +64,22 @@ export function markSplashDismissed() {
 const RESUME_SLIDE_INDEX = 2; // "splash screen 3" — the first promo/CTA slide
 let restartFromSlide: number | null = null;
 
+// SplashScreen only lives inside the home page, so a "Back to Home" tap made
+// *while already on the home page* navigates nowhere and never remounts it —
+// the module-scoped flags above go unread. This event lets an already-mounted
+// instance restart live; the flags above still cover mounting fresh from
+// another route.
+const RESTART_EVENT = "abans:splash-restart";
+
 // Return to the attract screen and resume the carousel from slide 3.
 export function returnToSplash() {
   restartFromSlide = RESUME_SLIDE_INDEX;
   splashDismissedThisSession = false;
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(
+      new CustomEvent(RESTART_EVENT, { detail: RESUME_SLIDE_INDEX })
+    );
+  }
 }
 
 /**
@@ -98,6 +110,16 @@ export default function SplashScreen() {
     // Clear the one-shot resume flag so a later normal navigation to "/"
     // doesn't replay the splash.
     restartFromSlide = null;
+  }, []);
+
+  useEffect(() => {
+    function onRestart(e: Event) {
+      const at = (e as CustomEvent<number>).detail;
+      setSlide(at);
+      setPhase("ready");
+    }
+    window.addEventListener(RESTART_EVENT, onRestart);
+    return () => window.removeEventListener(RESTART_EVENT, onRestart);
   }, []);
 
   useEffect(() => {

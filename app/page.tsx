@@ -3,6 +3,7 @@ import LtoOffers from "./components/lto-offers";
 import CountdownTimer from "./components/countdown-timer";
 import SplashScreen from "./components/splash-screen";
 import HomeCategoryTabs from "./components/home-category-tabs";
+import FloatingBackButton from "./components/floating-back-button";
 import { limitedOffers, LTO_ENDS_IN_HOURS } from "./data/catalog";
 
 const FEATURED_COUNT = 3;
@@ -39,6 +40,8 @@ export default function Home() {
         {/* Three product cards */}
         <LtoOffers offers={featured} />
       </section>
+
+      <FloatingBackButton />
     </div>
   );
 }
