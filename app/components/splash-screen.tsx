@@ -59,6 +59,17 @@ export function markSplashDismissed() {
   splashDismissedThisSession = true;
 }
 
+// Slide the attract carousel should resume from on the next mount. Set by the
+// inner-page "Back to Home" button; consumed once when the splash mounts.
+const RESUME_SLIDE_INDEX = 2; // "splash screen 3" — the first promo/CTA slide
+let restartFromSlide: number | null = null;
+
+// Return to the attract screen and resume the carousel from slide 3.
+export function returnToSplash() {
+  restartFromSlide = RESUME_SLIDE_INDEX;
+  splashDismissedThisSession = false;
+}
+
 /**
  * Kiosk attract / boot screen — shown once before the home page. Briefly
  * shows a loading state (simulating catalogue/asset warm-up), then cycles
@@ -68,14 +79,26 @@ export function markSplashDismissed() {
  * mounted underneath. Once dismissed, later mounts skip straight to the page.
  */
 export default function SplashScreen() {
+  // Read (once) whether this mount was requested to resume mid-carousel.
+  const [resumeAt] = useState<number | null>(() => restartFromSlide);
   const [phase, setPhase] = useState<Phase>(
-    splashDismissedThisSession ? "dismissed" : "loading"
+    resumeAt !== null
+      ? "ready"
+      : splashDismissedThisSession
+        ? "dismissed"
+        : "loading"
   );
-  const [slide, setSlide] = useState(0);
+  const [slide, setSlide] = useState(resumeAt ?? 0);
 
   // While the splash is up, pin the page to the top and lock background scroll
   // so the fixed overlay can't be dragged out of view.
   useViewportPin(phase !== "dismissed", true);
+
+  useEffect(() => {
+    // Clear the one-shot resume flag so a later normal navigation to "/"
+    // doesn't replay the splash.
+    restartFromSlide = null;
+  }, []);
 
   useEffect(() => {
     // Guard the functional update so a mount that started already-dismissed

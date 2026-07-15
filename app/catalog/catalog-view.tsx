@@ -16,6 +16,7 @@ import {
 import OnScreenKeyboard from "../components/onscreen-keyboard";
 import OnlineOfferCard from "../components/online-offer-card";
 import ProductDetailDrawer from "../components/product-detail-drawer";
+import FloatingBackButton from "../components/floating-back-button";
 import FilterDrawer from "../components/catalog/filter-drawer";
 import {
   catalogBrands,
@@ -368,6 +369,8 @@ export default function CatalogView() {
           />
         )}
       </AnimatePresence>
+
+      <FloatingBackButton />
     </div>
   );
 }

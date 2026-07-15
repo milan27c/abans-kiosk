@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import OnlineOfferCard from "./online-offer-card";
 import ProductDetailDrawer from "./product-detail-drawer";
+import FloatingBackButton from "./floating-back-button";
 import type { LimitedOffer } from "../data/catalog";
 
 // Standalone "View Offer" landing page reached from the splash CTAs: a
-// back-to-home nav, a full-width promo banner, then a grid of tappable
-// product cards (same style as the catalog) that open the QR detail drawer.
+// full-width promo banner, then a grid of tappable product cards (same style
+// as the catalog) that open the QR detail drawer. Return via the floating
+// "Back to Home" button.
 export default function OfferPage({
   banner,
   bannerAlt,
@@ -20,24 +20,11 @@ export default function OfferPage({
   bannerAlt: string;
   products: LimitedOffer[];
 }) {
-  const router = useRouter();
   const [detail, setDetail] = useState<LimitedOffer | null>(null);
   const [open, setOpen] = useState(false);
 
   return (
     <div className="relative min-h-full bg-canvas">
-      {/* Nav bar: back to home */}
-      <div className="sticky top-0 z-40 border-b border-line bg-canvas/90 px-10 py-6 backdrop-blur-md">
-        <button
-          type="button"
-          onClick={() => router.push("/")}
-          className="flex h-16 items-center gap-2 rounded-full border-2 border-line bg-surface pl-4 pr-6 text-fg"
-        >
-          <ArrowLeft size={28} strokeWidth={2.25} />
-          <span className="text-body font-semibold">Back to Home</span>
-        </button>
-      </div>
-
       {/* Offer banner */}
       <div className="relative w-full">
         <Image
@@ -71,6 +58,8 @@ export default function OfferPage({
         product={detail}
         onClose={() => setOpen(false)}
       />
+
+      <FloatingBackButton />
     </div>
   );
 }
