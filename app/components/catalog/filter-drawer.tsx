@@ -15,12 +15,14 @@ import {
 
 export default function FilterDrawer({
   open,
+  activeCategoryId = null,
   brands,
   options,
   onApply,
   onClose,
 }: {
   open: boolean;
+  activeCategoryId?: string | null;
   brands: string[];
   options: string[];
   onApply: (brands: string[], options: string[]) => void;
@@ -29,6 +31,7 @@ export default function FilterDrawer({
   return (
     <KioskOverlay open={open} onClose={onClose}>
       <FilterSheet
+        initialActiveId={activeCategoryId}
         initialBrands={brands}
         initialOptions={options}
         onApply={onApply}
@@ -39,11 +42,13 @@ export default function FilterDrawer({
 }
 
 function FilterSheet({
+  initialActiveId,
   initialBrands,
   initialOptions,
   onApply,
   onClose,
 }: {
+  initialActiveId: string | null;
   initialBrands: string[];
   initialOptions: string[];
   onApply: (brands: string[], options: string[]) => void;
@@ -51,7 +56,11 @@ function FilterSheet({
 }) {
   const [tempBrands, setTempBrands] = useState<string[]>(initialBrands);
   const [tempOptions, setTempOptions] = useState<string[]>(initialOptions);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  // Open focused on the category the visitor is already browsing so its
+  // sub-categories and its selected brand/options show as selected.
+  const [activeId, setActiveId] = useState<string | null>(
+    initialActiveId ?? initialOptions[0]?.split(OPT_SEP)[0] ?? null
+  );
 
   const active = activeId
     ? filterCategories.find((c) => c.id === activeId) ?? null

@@ -16,8 +16,12 @@ export default function Home() {
       <HomeHeader />
 
       <section className="px-10 pb-20 pt-[50px]">
+        {/* Shop by category */}
+        <h2 className="mb-5 text-h4 font-bold text-fg">Shop by Category</h2>
+        <HomeCategoryTabs />
+
         {/* Heading + countdown timer */}
-        <div className="mb-8 flex items-end justify-between gap-6">
+        <div className="mb-8 mt-14 flex items-end justify-between gap-6">
           <div className="flex flex-col gap-2">
             <span className="w-fit rounded-full bg-support-red/15 px-5 py-2 text-caption font-bold uppercase tracking-wider text-support-red">
               Limited Time
@@ -34,10 +38,6 @@ export default function Home() {
 
         {/* Three product cards */}
         <LtoOffers offers={featured} />
-
-        {/* Shop by category */}
-        <h2 className="mb-5 mt-14 text-h4 font-bold text-fg">Shop by Category</h2>
-        <HomeCategoryTabs />
       </section>
     </div>
   );

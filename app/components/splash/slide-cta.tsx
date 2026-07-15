@@ -4,11 +4,17 @@ import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { LayoutGrid, Tag } from "lucide-react";
 import TouchFooter from "./touch-footer";
+import { markSplashDismissed } from "../splash-screen";
 
 // Shared image-only slide: no headline/tag overlays, just the full-bleed
 // background (rendered by the carousel) plus two bottom CTAs and a compact
-// "touch anywhere" hint. Reused across all four "New Splash" images.
-export default function SlideCta() {
+// "touch anywhere" hint. Reused across all four "New Splash" images; each
+// slide points "View Offer" at its own offer page via `offerHref`.
+export default function SlideCta({
+  offerHref = "/offer/ac",
+}: {
+  offerHref?: string;
+}) {
   const router = useRouter();
 
   return (
@@ -18,7 +24,8 @@ export default function SlideCta() {
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            // Destination TBD — wired up later.
+            markSplashDismissed();
+            router.push(offerHref);
           }}
           whileTap={{ scale: 0.97 }}
           transition={{ duration: 0.15 }}
@@ -35,6 +42,7 @@ export default function SlideCta() {
           type="button"
           onClick={(e) => {
             e.stopPropagation();
+            markSplashDismissed();
             router.push("/catalog");
           }}
           whileTap={{ scale: 0.97 }}

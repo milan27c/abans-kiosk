@@ -138,6 +138,58 @@ export const limitedOffers: LimitedOffer[] = [
 // Hours the limited-time offer countdown starts from.
 export const LTO_ENDS_IN_HOURS = 14.5;
 
+// Products for the standalone "View Offer" landing page (splash CTA →
+// /offer/ac). Reuses the LimitedOffer shape since the card/drawer are the
+// same components.
+export const acOfferProducts: LimitedOffer[] = [
+  {
+    id: "ac-offer-1",
+    name: "Haier 24000BTU Inverter Air Conditioner - R32",
+    image: "/images/acoffer/1.webp",
+    originalPrice: 329990,
+    salePrice: 254990,
+  },
+  {
+    id: "ac-offer-2",
+    name: "Haier 18000BTU Inverter Air Conditioner - R32",
+    image: "/images/acoffer/2.webp",
+    originalPrice: 289990,
+    salePrice: 214990,
+  },
+];
+
+// Products for the JVC party-speaker offer page (splash CTA → /offer/jvc).
+export const jvcOfferProducts: LimitedOffer[] = [
+  {
+    id: "jvc-offer-1",
+    name: "JVC Party Speaker 2000W PMPO with 2 Wireless Mics & Tripod + Remote - Black",
+    image: "/images/jvcoffer/1.png",
+    originalPrice: 99999,
+    salePrice: 69999,
+  },
+  {
+    id: "jvc-offer-2",
+    name: "JVC Party Speaker 1600W PMPO Wireless Mic & Remote Control - Black",
+    image: "/images/jvcoffer/2.png",
+    originalPrice: 69999,
+    salePrice: 44999,
+  },
+  {
+    id: "jvc-offer-3",
+    name: "JVC Portable Party Speaker 1600W PMPO Wireless Mic & Remote Control - Black",
+    image: "/images/jvcoffer/3.png",
+    originalPrice: 79999,
+    salePrice: 49999,
+  },
+  {
+    id: "jvc-offer-4",
+    name: "JVC Portable Party Speaker 1800W PMPO Wireless Mic & Remote Control - Black",
+    image: "/images/jvcoffer/4.png",
+    originalPrice: 89999,
+    salePrice: 54999,
+  },
+];
+
 // Online-exclusive offers — a horizontally scrollable rail on the home page.
 // Minimal card: image, name, price, original price only.
 export type OnlineOffer = {

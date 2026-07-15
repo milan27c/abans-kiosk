@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { Loader2 } from "lucide-react";
@@ -26,13 +26,22 @@ const LIGHT_TOP_OVERLAY = "bg-gradient-to-b from-transparent via-transparent to-
 // CTAs (SlideCta), reused across all four "New Splash" images.
 const CTA_MS = 6500;
 
-const SLIDES = [
+type Slide = {
+  bg: string;
+  duration: number;
+  Content: ComponentType<{ offerHref?: string }>;
+  overlay: string;
+  // Offer page the slide's "View Offer" CTA links to (SlideCta only).
+  offerHref?: string;
+};
+
+const SLIDES: Slide[] = [
   { bg: "/images/newsplash1.png", duration: 7000, Content: SlideWelcome, overlay: LIGHT_TOP_OVERLAY },
   { bg: "/images/newsplash2.png", duration: BRANDS_MS, Content: SlideBrands, overlay: LIGHT_TOP_OVERLAY },
-  { bg: "/images/new-splash/slide3.png", duration: CTA_MS, Content: SlideCta, overlay: LIGHT_TOP_OVERLAY },
-  { bg: "/images/new-splash/slide4.png", duration: CTA_MS, Content: SlideCta, overlay: LIGHT_TOP_OVERLAY },
-  { bg: "/images/new-splash/slide5.png", duration: CTA_MS, Content: SlideCta, overlay: LIGHT_TOP_OVERLAY },
-  { bg: "/images/new-splash/slide6.png", duration: CTA_MS, Content: SlideCta, overlay: LIGHT_TOP_OVERLAY },
+  { bg: "/images/new-splash/slide3.png", duration: CTA_MS, Content: SlideCta, overlay: LIGHT_TOP_OVERLAY, offerHref: "/offer/ac" },
+  { bg: "/images/new-splash/slide4.png", duration: CTA_MS, Content: SlideCta, overlay: LIGHT_TOP_OVERLAY, offerHref: "/offer/jvc" },
+  { bg: "/images/new-splash/slide5.png", duration: CTA_MS, Content: SlideCta, overlay: LIGHT_TOP_OVERLAY, offerHref: "/offer/ac" },
+  { bg: "/images/new-splash/slide6.png", duration: CTA_MS, Content: SlideCta, overlay: LIGHT_TOP_OVERLAY, offerHref: "/offer/ac" },
 ];
 
 // Once the visitor has dismissed the attract screen, returning to the home
@@ -41,6 +50,14 @@ const SLIDES = [
 // navigations but resets on a real page load / kiosk reboot, so the attract
 // screen still shows on a fresh start.
 let splashDismissedThisSession = false;
+
+// Slides that navigate away via their own CTA (e.g. "View Offer") stop the
+// tap from bubbling to the overlay's own dismiss handler, so they need to
+// mark the splash dismissed themselves before routing away — otherwise a
+// later return to "/" would replay the attract screen from slide one.
+export function markSplashDismissed() {
+  splashDismissedThisSession = true;
+}
 
 /**
  * Kiosk attract / boot screen — shown once before the home page. Briefly
@@ -147,7 +164,7 @@ export default function SplashScreen() {
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 className="absolute inset-0"
               >
-                <Active />
+                <Active offerHref={SLIDES[slide].offerHref} />
               </motion.div>
             )}
           </AnimatePresence>
