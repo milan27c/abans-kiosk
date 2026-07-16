@@ -19,18 +19,32 @@ export default function KioskFrame({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     function fit() {
-      const margin = 32; // breathing room so the frame edge is visible
-      const availW = window.innerWidth - margin * 2;
-      const availH = window.innerHeight - margin * 2;
+      // visualViewport tracks the actual visible area on mobile (excludes
+      // the on-screen keyboard and adjusts as Safari's toolbar collapses),
+      // which window.innerWidth/innerHeight don't reliably reflect.
+      const vv = window.visualViewport;
+      const viewportW = vv?.width ?? window.innerWidth;
+      const viewportH = vv?.height ?? window.innerHeight;
+      // Tighter breathing room on compact/mobile viewports so more of the
+      // screen is used for the preview; roomier margin on desktop.
+      const margin = viewportW < 640 ? 12 : 32;
+      const availW = viewportW - margin * 2;
+      const availH = viewportH - margin * 2;
       setScale(Math.min(availW / KIOSK_W, availH / KIOSK_H, 1));
     }
     fit();
     window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
+    window.addEventListener("orientationchange", fit);
+    window.visualViewport?.addEventListener("resize", fit);
+    return () => {
+      window.removeEventListener("resize", fit);
+      window.removeEventListener("orientationchange", fit);
+      window.visualViewport?.removeEventListener("resize", fit);
+    };
   }, []);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#4b4b52] p-8">
+    <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-[#4b4b52] p-3 sm:p-8">
       <div
         style={{ width: KIOSK_W * scale, height: KIOSK_H * scale }}
         className="relative overflow-hidden rounded-[36px] shadow-[0_40px_120px_rgba(0,0,0,0.55)] ring-1 ring-white/10"
